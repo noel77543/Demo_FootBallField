@@ -1,4 +1,4 @@
-package tw.noel.sung.com.demo_football_field.game_view;
+package tw.noel.sung.com.demo_football_field.game_view.rectangle;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,36 +12,23 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import tw.noel.sung.com.demo_football_field.R;
+import tw.noel.sung.com.demo_football_field.game_view.BasicGameFieldView;
 import tw.noel.sung.com.demo_football_field.game_view.model.GamePoint;
 
 /**
  * Created by noel on 2018/4/28.
  */
 
-public class FootBallFieldView extends ImageView implements Runnable {
+public class RectangleGameFieldView extends BasicGameFieldView implements Runnable {
 
-    private Context context;
-    private int viewHeight;
-    private int viewWidth;
-
-    private Paint paint;
-    private Path path;
-    private Bitmap bitmap;
-    private Canvas canvas;
-    private final int GAME_FIELD_STROKE_WIDTH = 5;
 
     //球場與外圍邊界
     private final int GAME_FIELD_SPACE = 50;
     private final int GATE_WIDTH = 150;
     private final int GATE_LENGTH = 300;
-    private final int BALL_UPDATE_TIME = 300;
-
-    private float ballX;
-    private float ballY;
-    private final float BALL_SIZE = 10;
+    private final int BALL_UPDATE_TIME = 100;
 
     //左上點
     private GamePoint gamePointLeftTop;
@@ -62,24 +49,25 @@ public class FootBallFieldView extends ImageView implements Runnable {
     private int maxBottom;
 
 
-    //for test
-    int stepX = 30;
-    int stepY = 30;
+    //位移量Ｘ
+    int stepX = 60;
+    //位移量Ｙ
+    int stepY = 60;
 
     //------------
-    public FootBallFieldView(@NonNull Context context) {
+    public RectangleGameFieldView(@NonNull Context context) {
         super(context);
         this.context = context;
         post(this);
     }
 
-    public FootBallFieldView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public RectangleGameFieldView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         post(this);
     }
 
-    public FootBallFieldView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public RectangleGameFieldView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
         post(this);
@@ -93,6 +81,7 @@ public class FootBallFieldView extends ImageView implements Runnable {
         viewWidth = getWidth();
         init();
     }
+
 
     //---------------------
     private void init() {
@@ -108,6 +97,7 @@ public class FootBallFieldView extends ImageView implements Runnable {
         setBackground(new BitmapDrawable(getResources(), bitmap));
 
         drawGameField();
+        drawBall();
     }
 
     //----------------------
@@ -126,7 +116,6 @@ public class FootBallFieldView extends ImageView implements Runnable {
         drawLeftGate();
         drawRightGate();
         canvas.drawPath(path, paint);
-        drawBall();
     }
     //----------------------
 
@@ -218,8 +207,8 @@ public class FootBallFieldView extends ImageView implements Runnable {
 
 
                 canvas.drawCircle
-                        (ballX = (ballX += stepX) > maxRight ? maxRight-20 : (ballX += stepX) < maxLeft ? maxLeft+20 : (ballX += stepX),
-                                ballY = (ballY += stepY) > maxBottom ? maxBottom-20 : (ballY += stepY) < maxTop ? maxTop +20: (ballY += stepY),
+                        (ballX = ballX > maxRight ? maxRight : ballX < maxLeft ? maxLeft : ballX,
+                                ballY = ballY > maxBottom ? maxBottom - 20 : ballY < maxTop ? maxTop + 20 : ballY,
                                 BALL_SIZE, paint);
                 invalidate();
 
